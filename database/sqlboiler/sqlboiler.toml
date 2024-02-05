@@ -1,0 +1,7 @@
+[psql]
+dbname = "gocourse"
+host = "localhost"
+port = 5432
+user = "gocourse"
+pass = "test"
+sslmode = "disable"
