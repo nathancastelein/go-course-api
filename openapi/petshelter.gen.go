@@ -11,10 +11,16 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// NewPet defines model for NewPet.
+type NewPet struct {
+	Category string `json:"category"`
+	Name     string `json:"name"`
+}
+
 // Pet defines model for Pet.
 type Pet struct {
 	Category string `json:"category"`
-	Id       *int64 `json:"id,omitempty"`
+	Id       int    `json:"id"`
 	Name     string `json:"name"`
 }
 
@@ -24,11 +30,16 @@ type FindPetsByCategoriesParams struct {
 	Categories []string `form:"categories" json:"categories"`
 }
 
-// AddPetJSONRequestBody defines body for AddPet for application/json ContentType.
-type AddPetJSONRequestBody = Pet
+// RenamePetByIdJSONBody defines parameters for RenamePetById.
+type RenamePetByIdJSONBody struct {
+	Name string `json:"name"`
+}
 
-// UpdatePetJSONRequestBody defines body for UpdatePet for application/json ContentType.
-type UpdatePetJSONRequestBody = Pet
+// AddPetJSONRequestBody defines body for AddPet for application/json ContentType.
+type AddPetJSONRequestBody = NewPet
+
+// RenamePetByIdJSONRequestBody defines body for RenamePetById for application/json ContentType.
+type RenamePetByIdJSONRequestBody RenamePetByIdJSONBody
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -43,13 +54,13 @@ type ServerInterface interface {
 	FindPetsByCategories(ctx echo.Context, params FindPetsByCategoriesParams) error
 	// Deletes a pet
 	// (DELETE /pet/{petId})
-	DeletePet(ctx echo.Context, petId int64) error
+	DeletePet(ctx echo.Context, petId int) error
 	// Find pet by ID
 	// (GET /pet/{petId})
-	GetPetById(ctx echo.Context, petId int64) error
-	// Update an existing pet
-	// (PUT /pet/{petId})
-	UpdatePet(ctx echo.Context, petId int64) error
+	GetPetById(ctx echo.Context, petId int) error
+	// Rename a pet
+	// (POST /pet/{petId}/rename)
+	RenamePetById(ctx echo.Context, petId int) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -97,7 +108,7 @@ func (w *ServerInterfaceWrapper) FindPetsByCategories(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) DeletePet(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "petId" -------------
-	var petId int64
+	var petId int
 
 	err = runtime.BindStyledParameterWithOptions("simple", "petId", ctx.Param("petId"), &petId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
@@ -113,7 +124,7 @@ func (w *ServerInterfaceWrapper) DeletePet(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) GetPetById(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "petId" -------------
-	var petId int64
+	var petId int
 
 	err = runtime.BindStyledParameterWithOptions("simple", "petId", ctx.Param("petId"), &petId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
@@ -125,11 +136,11 @@ func (w *ServerInterfaceWrapper) GetPetById(ctx echo.Context) error {
 	return err
 }
 
-// UpdatePet converts echo context to params.
-func (w *ServerInterfaceWrapper) UpdatePet(ctx echo.Context) error {
+// RenamePetById converts echo context to params.
+func (w *ServerInterfaceWrapper) RenamePetById(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "petId" -------------
-	var petId int64
+	var petId int
 
 	err = runtime.BindStyledParameterWithOptions("simple", "petId", ctx.Param("petId"), &petId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
@@ -137,7 +148,7 @@ func (w *ServerInterfaceWrapper) UpdatePet(ctx echo.Context) error {
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.UpdatePet(ctx, petId)
+	err = w.Handler.RenamePetById(ctx, petId)
 	return err
 }
 
@@ -174,6 +185,6 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.GET(baseURL+"/pet/findByCategories", wrapper.FindPetsByCategories)
 	router.DELETE(baseURL+"/pet/:petId", wrapper.DeletePet)
 	router.GET(baseURL+"/pet/:petId", wrapper.GetPetById)
-	router.PUT(baseURL+"/pet/:petId", wrapper.UpdatePet)
+	router.POST(baseURL+"/pet/:petId/rename", wrapper.RenamePetById)
 
 }

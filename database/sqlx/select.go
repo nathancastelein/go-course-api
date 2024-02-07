@@ -19,14 +19,14 @@ func SelectAllPets() ([]shelter.Pet, error) {
 	return nil, nil
 }
 
-func SelectOnePet(id int) (*shelter.Pet, error) {
+func SelectOnePet(id int) (shelter.Pet, error) {
 	query := ``
 
 	db, err := connect.SQLx()
 	if err != nil {
-		return nil, err
+		return shelter.Pet{}, err
 	}
 
 	fmt.Println("I want to execute a query on db", query, db) // Remove me
-	return nil, nil
+	return shelter.Pet{}, nil
 }

@@ -16,9 +16,8 @@ func NewServer() *Server {
 }
 
 func newOpenAPIPet(pet shelter.Pet) openapi.Pet {
-	petId := int64(pet.Id)
 	return openapi.Pet{
-		Id:       &petId,
+		Id:       pet.Id,
 		Name:     pet.Name,
 		Category: pet.Category,
 	}
@@ -58,13 +57,13 @@ func (s *Server) FindPetsByCategories(ctx echo.Context, params openapi.FindPetsB
 
 // Find pet by ID
 // (GET /pet/{petId})
-func (s *Server) GetPetById(ctx echo.Context, petId int64) error {
-	pet, err := sqlboiler.SelectOnePet(int(petId))
+func (s *Server) GetPetById(ctx echo.Context, petId int) error {
+	pet, err := sqlboiler.SelectOnePet(petId)
 	if err != nil {
 		return ctx.String(http.StatusNotFound, "pet not found")
 	}
 
-	return ctx.JSON(http.StatusOK, newOpenAPIPet(*pet))
+	return ctx.JSON(http.StatusOK, newOpenAPIPet(pet))
 }
 
 // Add a new pet to the shelter
@@ -75,7 +74,7 @@ func (s *Server) AddPet(ctx echo.Context) error {
 		return ctx.String(http.StatusBadRequest, "fail to read body")
 	}
 
-	pet, err := sqlboiler.InsertNewPet(&shelter.Pet{
+	pet, err := sqlboiler.InsertNewPet(shelter.Pet{
 		Name:     addPet.Name,
 		Category: addPet.Category,
 	})
@@ -83,35 +82,35 @@ func (s *Server) AddPet(ctx echo.Context) error {
 		return ctx.String(http.StatusInternalServerError, "fail to insert pet")
 	}
 
-	return ctx.JSON(http.StatusOK, newOpenAPIPet(*pet))
+	return ctx.JSON(http.StatusOK, newOpenAPIPet(pet))
 }
 
 // Deletes a pet
 // (DELETE /pet/{petId})
-func (s *Server) DeletePet(ctx echo.Context, petId int64) error {
-	err := sqlboiler.DeleteOnePet(int(petId))
+func (s *Server) DeletePet(ctx echo.Context, petId int) error {
+	err := sqlboiler.DeleteOnePet(petId)
 	if err != nil {
 		return ctx.String(http.StatusBadRequest, "deletion failed")
 	}
 	return ctx.NoContent(http.StatusOK)
 }
 
-// Update an existing pet
-// (PUT /pet/{petId})
-func (s *Server) UpdatePet(ctx echo.Context, petId int64) error {
-	updatePet := openapi.UpdatePetJSONRequestBody{}
+// Rename a pet
+// (POST /pet/{petId}/rename)
+func (s *Server) RenamePetById(ctx echo.Context, petId int) error {
+	updatePet := openapi.RenamePetByIdJSONRequestBody{}
 	if err := ctx.Bind(&updatePet); err != nil {
 		return ctx.String(http.StatusBadRequest, "fail to read body")
 	}
 
-	updatedPet := &shelter.Pet{
-		Id:       int(petId),
-		Name:     updatePet.Name,
-		Category: updatePet.Category,
-	}
-	if err := sqlboiler.UpdatePet(updatedPet); err != nil {
+	if err := sqlboiler.UpdatePetName(petId, updatePet.Name); err != nil {
 		return ctx.String(http.StatusInternalServerError, "fail to update pet")
 	}
 
-	return ctx.JSON(http.StatusOK, newOpenAPIPet(*updatedPet))
+	pet, err := sqlboiler.SelectOnePet(petId)
+	if err != nil {
+		return ctx.String(http.StatusInternalServerError, "fail to select pet")
+	}
+
+	return ctx.JSON(http.StatusOK, newOpenAPIPet(pet))
 }

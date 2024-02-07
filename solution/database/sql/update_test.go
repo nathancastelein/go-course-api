@@ -5,7 +5,7 @@ import "testing"
 func TestUpdate(t *testing.T) {
 	// Arrange
 	// Act
-	err := UpdatePetName()
+	err := UpdatePetName(4, "Bernard")
 
 	// Assert
 	if err != nil {

@@ -16,9 +16,8 @@ func NewServer() *Server {
 newOpenAPIPet creates an openapi.Pet from a shelter.Pet.
 */
 func newOpenAPIPet(pet shelter.Pet) openapi.Pet {
-	petId := int64(pet.Id)
 	return openapi.Pet{
-		Id:       &petId,
+		Id:       pet.Id,
 		Name:     pet.Name,
 		Category: pet.Category,
 	}
@@ -38,7 +37,7 @@ func (s *Server) FindPetsByCategories(ctx echo.Context, params openapi.FindPetsB
 
 // Find pet by ID
 // (GET /pet/{petId})
-func (s *Server) GetPetById(ctx echo.Context, petId int64) error {
+func (s *Server) GetPetById(ctx echo.Context, petId int) error {
 	return nil
 }
 
@@ -55,15 +54,15 @@ func (s *Server) AddPet(ctx echo.Context) error {
 
 // Deletes a pet
 // (DELETE /pet/{petId})
-func (s *Server) DeletePet(ctx echo.Context, petId int64) error {
+func (s *Server) DeletePet(ctx echo.Context, petId int) error {
 	return nil
 }
 
 // Update an existing pet
 // (PUT /pet/{petId})
-func (s *Server) UpdatePet(ctx echo.Context, petId int64) error {
+func (s *Server) RenamePetById(ctx echo.Context, petId int) error {
 	// Tips:
-	// updatePet := openapi.UpdatePetJSONRequestBody{}
+	// updatePet := openapi.RenamePetByIdJSONBody{}
 	// https://echo.labstack.com/docs/binding
 	// And Bind method from Context:
 	// https://pkg.go.dev/github.com/labstack/echo/v4#Context

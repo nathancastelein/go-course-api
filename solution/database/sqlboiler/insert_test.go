@@ -10,7 +10,7 @@ func TestInsert(t *testing.T) {
 	// Arrange
 
 	// Act
-	pet, err := InsertNewPet(&shelter.Pet{
+	pet, err := InsertNewPet(shelter.Pet{
 		Name:     "Medor",
 		Category: "Dog",
 	})
@@ -20,7 +20,7 @@ func TestInsert(t *testing.T) {
 		t.Fatalf("err = %s; want nil", err)
 	}
 
-	if pet == nil {
+	if pet.Id == 0 {
 		t.Fatal("pet is nil; want not nil")
 	}
 

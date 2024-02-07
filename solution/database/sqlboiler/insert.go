@@ -10,16 +10,16 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
-func InsertNewPet(pet *shelter.Pet) (*shelter.Pet, error) {
+func InsertNewPet(pet shelter.Pet) (shelter.Pet, error) {
 	ctx := context.Background()
 	db, err := connect.SQL()
 	if err != nil {
-		return nil, err
+		return shelter.Pet{}, err
 	}
 
 	category, err := models.Categories(models.CategoryWhere.Name.EQ(pet.Category)).One(ctx, db)
 	if err != nil {
-		return nil, err
+		return shelter.Pet{}, err
 	}
 
 	databasePet := models.Pet{
@@ -28,10 +28,10 @@ func InsertNewPet(pet *shelter.Pet) (*shelter.Pet, error) {
 	}
 
 	if err := databasePet.Insert(ctx, db, boil.Infer()); err != nil {
-		return nil, err
+		return shelter.Pet{}, err
 	}
 
-	return &shelter.Pet{
+	return shelter.Pet{
 		Id:       databasePet.ID,
 		Name:     databasePet.Name,
 		Category: category.Name,

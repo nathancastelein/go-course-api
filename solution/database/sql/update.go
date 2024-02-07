@@ -6,7 +6,7 @@ import (
 	"github.com/nathancastelein/go-course-api/solution/database/connect"
 )
 
-func UpdatePetName() error {
+func UpdatePetName(id int, newName string) error {
 	query := `UPDATE pet SET name = $1 WHERE id = $2`
 
 	db, err := connect.SQL()
@@ -14,7 +14,7 @@ func UpdatePetName() error {
 		return err
 	}
 
-	result, err := db.Exec(query, "Bernard", 4)
+	result, err := db.Exec(query, newName, id)
 	if err != nil {
 		return err
 	}

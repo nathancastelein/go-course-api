@@ -2,14 +2,12 @@ package sqlboiler
 
 import (
 	"testing"
-
-	"github.com/nathancastelein/go-course-api/shelter"
 )
 
 func TestUpdate(t *testing.T) {
 	// Arrange
 	// Act
-	err := UpdatePet(&shelter.Pet{Id: 1, Name: "Hoagie", Category: "Dog"})
+	err := UpdatePetName(1, "Hoagie")
 
 	// Assert
 	if err != nil {

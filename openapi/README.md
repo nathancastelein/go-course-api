@@ -13,5 +13,5 @@ go install github.com/deepmap/oapi-codegen/v2/cmd/oapi-codegen@latest
 ## Generate handlers
 
 ```bash
-oapi-codegen -package openapi ./openapi.yaml > petshelter.gen.go
+oapi-codegen -generate server,types -package openapi ./openapi.yaml > petshelter.gen.go
 ```

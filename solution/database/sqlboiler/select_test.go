@@ -33,10 +33,6 @@ func TestSelectOnePet(t *testing.T) {
 		t.Fatalf("err = %s; want nil", err)
 	}
 
-	if pet == nil {
-		t.Fatal("pet is nil; want not nil")
-	}
-
 	if pet.Id != 1 {
 		t.Fatalf("pet id is %d; want 1", pet.Id)
 	}
