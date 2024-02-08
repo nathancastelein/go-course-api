@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/nathancastelein/go-course-api/database/sqlboiler"
+	"github.com/nathancastelein/go-course-api/solution/database/sqlboiler"
 )
 
 func ListPetsHandler(w http.ResponseWriter, r *http.Request) {

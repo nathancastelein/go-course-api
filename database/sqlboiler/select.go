@@ -6,10 +6,10 @@ import (
 
 func SelectAllPets() ([]shelter.Pet, error) {
 	/*
-		# Uncomment when you start!
+		// Uncomment when you start!
 
 		ctx := context.Background()
-		db, err := connect.Connect()
+		db, err := connect.SQL()
 		if err != nil {
 			return nil, err
 		}
@@ -27,10 +27,10 @@ func SelectAllPets() ([]shelter.Pet, error) {
 
 func SelectOnePet(id int) (*shelter.Pet, error) {
 	/*
-		# Uncomment when you start!
+		// Uncomment when you start!
 
 		ctx := context.Background()
-		db, err := connect.Connect()
+		db, err := connect.SQL()
 		if err != nil {
 			return nil, err
 		}
