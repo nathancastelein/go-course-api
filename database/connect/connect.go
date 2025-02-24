@@ -2,8 +2,9 @@ package connect
 
 import (
 	"database/sql"
-	"errors"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 func getPostgreSQLDSN() string {
@@ -14,8 +15,5 @@ func getPostgreSQLDSN() string {
 }
 
 func SQL() (*sql.DB, error) {
-	// Connection string: use getPostgresqlDSN function.
-	// Driver name: postgres
-	// Documentation: https://pkg.go.dev/database/sql#Open
-	return nil, errors.New("not implemented")
+	return sql.Open("postgres", getPostgreSQLDSN())
 }

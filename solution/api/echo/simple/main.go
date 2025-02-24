@@ -54,12 +54,10 @@ func FindPetHandler(c echo.Context) error {
 
 func main() {
 	e := echo.New()
-	e.Static("/swaggerui", "../../../../openapi/swaggerui")
 
 	e.GET("/pet", ListPetsHandler)
 	e.GET("/pet/:id", FindPetHandler)
 
 	e.Logger.Print("Server is running on http://localhost:8080")
-	e.Logger.Print("Swagger UI URL: http://localhost:8080/swaggerui/")
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -2,6 +2,7 @@ package sql
 
 import (
 	"errors"
+	"log/slog"
 
 	"github.com/nathancastelein/go-course-api/shelter"
 	"github.com/nathancastelein/go-course-api/solution/database/connect"
@@ -20,7 +21,7 @@ func SimpleQuery() (bool, error) {
 		return false, err
 	}
 
-	for rows.Next() {
+	if rows.Next() {
 		var result bool
 		if err := rows.Scan(&result); err != nil {
 			return false, err
@@ -33,11 +34,14 @@ func SimpleQuery() (bool, error) {
 }
 
 func SelectAllPetNames() ([]string, error) {
+	query := `SELECT pet.name FROM pet;`
+	slog.Debug("executing query", slog.String("query", query))
+
 	return nil, errors.New("not implemented")
 }
 
 func SelectAllPets() ([]shelter.Pet, error) {
-	query := `` // Tips: your query will require a JOIN
+	query := `SELECT pet.id, pet.name, category.name FROM pet INNER JOIN category ON pet.category = category.id;`
 
 	db, err := connect.SQL()
 	if err != nil {

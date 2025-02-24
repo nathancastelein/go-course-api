@@ -36,23 +36,23 @@ func SelectAllPets() ([]shelter.Pet, error) {
 	return shelterPets, nil
 }
 
-func SelectOnePet(id int) (shelter.Pet, error) {
+func SelectOnePet(id int) (*shelter.Pet, error) {
 	ctx := context.Background()
 	db, err := connect.SQL()
 	if err != nil {
-		return shelter.Pet{}, err
+		return nil, err
 	}
 
 	pet, err := models.FindPet(ctx, db, id)
 	if err != nil {
-		return shelter.Pet{}, err
+		return nil, err
 	}
 
 	category, err := pet.PetCategory().One(ctx, db)
 	if err != nil {
-		return shelter.Pet{}, err
+		return nil, err
 	}
-	return shelter.Pet{
+	return &shelter.Pet{
 		Id:       pet.ID,
 		Name:     pet.Name,
 		Category: category.Name,
